@@ -37,10 +37,19 @@ function Home() {
       setTimeout(() => timerRef.current.restartTimer(), 5);
     }
   };
-  const increaseSessionCounter = () => setSessionCounter(sessionCounter + 1);
+  const increaseSessionCounter = () => {
+    if (sessionCounter <= 60) {
+      setSessionCounter(sessionCounter + 1);
+      setTimeout(() => timerRef.current.restartTimer(), 5);
+    }
+  };
 
-  const decreaseSessionCounter = () =>
-    sessionCounter > 1 ? setSessionCounter(sessionCounter - 1) : null;
+  const decreaseSessionCounter = () => {
+    if (sessionCounter > 0) {
+      setSessionCounter(sessionCounter - 1);
+      setTimeout(() => timerRef.current.restartTimer(), 5);
+    }
+  };
 
   return (
     <div id="home-container">
