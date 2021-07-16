@@ -1,86 +1,104 @@
-import React, { useState, forwardRef, useImperativeHandle } from "react";
+import React, {
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import alarmSrc from "./audio/alarm.mp3";
-import { useTimer } from "react-timer-hook";
+import accurateInterval from "accurate-interval";
 import "./Timer.css";
 
 function Timer(props, ref) {
-  const [sessionCounter, setSessionCounter] = useState(1);
+  const sessionTimeSecs = props.sessionTime * 60;
+  const breakTimeSecs = props.breakTime * 60;
+
+  const [timeLeft, setTimeLeft] = useState(sessionTimeSecs);
+  const [isRunning, setIsRunning] = useState(false);
   const [titleLabel, setTitleLabel] = useState("Session");
-  const numToMins = (num) => {
-    const time = new Date();
-    time.setSeconds(60 * num + time.getSeconds());
-    return time;
-  };
-
-  const alarmSound = document.getElementById("beep");
-
-  const onFinish = () => {
-    if (props.sessions === sessionCounter && titleLabel === "Break") {
-      alarmSound.play();
-      props.passRunning(!isRunning);
-    } else if (titleLabel === "Break") {
-      alarmSound.play();
-      setTitleLabel("Session");
-      setSessionCounter(sessionCounter + 1);
-      setTimeout(() => restart(numToMins(props.sessionTime)), 1000);
-    } else if (titleLabel === "Session") {
-      alarmSound.play();
-      setTitleLabel("Break");
-      setTimeout(() => restart(numToMins(props.breakTime)), 1000);
-    }
-  };
-
-  const { seconds, minutes, hours, isRunning, resume, pause, restart } =
-    useTimer({
-      expiryTimestamp: numToMins(props.sessionTime),
-      onExpire: () => onFinish(),
-      autoStart: false,
-    });
-
-  const startPause = () => {
-    if (isRunning) {
-      pause();
-      props.passRunning(!isRunning);
-    } else {
-      resume();
-      props.passRunning(!isRunning);
-    }
-  };
+  const [intervalId, setIntervalId] = useState();
 
   useImperativeHandle(
     ref,
     () => ({
       restartTimer() {
-        restart(numToMins(props.sessionTime), false);
-        setSessionCounter(1);
-        setTitleLabel("Session");
+        setTimeLeft(() =>
+          titleLabel === "Session" ? sessionTimeSecs : breakTimeSecs
+        );
+        setTitleLabel(titleLabel);
       },
     }),
-    [restart, props.sessionTime]
+    [sessionTimeSecs, titleLabel, breakTimeSecs]
   );
 
+  const switchTimer = () => {
+    if (titleLabel === "Break") {
+      setTitleLabel("Session");
+      setTimeLeft(sessionTimeSecs);
+    } else if (titleLabel === "Session") {
+      setTitleLabel("Break");
+      setTimeLeft(breakTimeSecs);
+    }
+  };
+
+  const startTimer = () => {
+    let id = accurateInterval(() => {
+      if (timeLeft === 0) {
+        switchTimer();
+      } else {
+        setTimeLeft(timeLeft - 1);
+      }
+    }, 1000);
+    setIntervalId(id);
+  };
+
+  const startPause = () => {
+    if (isRunning) {
+      setIsRunning(false);
+    } else {
+      setIsRunning(true);
+    }
+  };
+
+  useEffect(() => {
+    props.passRunning(isRunning);
+    if (isRunning) {
+      if (timeLeft === 0) document.getElementById("beep").play();
+      startTimer();
+    } else {
+      if (intervalId !== undefined) intervalId.clear();
+    }
+    return () => {
+      if (intervalId !== undefined) intervalId.clear();
+    };
+  }, [timeLeft, isRunning]);
+
   const restartTimer = () => {
-    restart(numToMins(props.sessionTime), false);
-    setSessionCounter(1);
     setTitleLabel("Session");
     props.setSessionLength(25);
     props.setBreakLength(5);
+    setTimeLeft(25 * 60);
+    setIsRunning(false);
     document.getElementById("beep").pause();
     document.getElementById("beep").currentTime = 0;
   };
 
-  const formatTimer = (timeNum) =>
-    timeNum < 10 ? "0" + timeNum.toString() : timeNum;
+  const formatTime = () => {
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft % 60;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    return minutes + ":" + seconds;
+  };
 
   return (
     <div id="timer-container">
       <audio id="beep" src={alarmSrc}></audio>
-      <h2 id="timer-label">{titleLabel + " " + sessionCounter}</h2>
+      <h2 id="timer-label">{titleLabel}</h2>
       <div
         id="time-left"
-        className={minutes === 0 && hours === 0 ? "is-finishing" : "is-running"}
+        className={timeLeft < 60 ? "is-finishing" : "is-running"}
       >
-        {hours === 1 ? "60" : formatTimer(minutes)}:{formatTimer(seconds)}
+        {formatTime()}
       </div>
       <div id="control-panel">
         <button

@@ -10,6 +10,7 @@
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
     "react-timer-hook": "^3.0.4",
+    "accurate-interval": "^1.0.9",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

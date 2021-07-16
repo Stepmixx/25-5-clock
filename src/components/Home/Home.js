@@ -6,7 +6,6 @@ import Timer from "../Timer";
 function Home() {
   const [sessionLengthCounter, setSessionLengthCounter] = useState(25);
   const [breakLengthCounter, setBreakLengthCounter] = useState(5);
-  const [sessionCounter, setSessionCounter] = useState(1);
   const [timerIsRunning, setTimerIsRunning] = useState(false);
   const timerRef = useRef();
 
@@ -37,19 +36,6 @@ function Home() {
       setTimeout(() => timerRef.current.restartTimer(), 5);
     }
   };
-  const increaseSessionCounter = () => {
-    if (sessionCounter <= 60) {
-      setSessionCounter(sessionCounter + 1);
-      setTimeout(() => timerRef.current.restartTimer(), 5);
-    }
-  };
-
-  const decreaseSessionCounter = () => {
-    if (sessionCounter > 0) {
-      setSessionCounter(sessionCounter - 1);
-      setTimeout(() => timerRef.current.restartTimer(), 5);
-    }
-  };
 
   return (
     <div id="home-container">
@@ -77,22 +63,10 @@ function Home() {
           decrementBtnId="break-decrement"
           timerIsRunning={timerIsRunning}
         />
-        <Counter
-          labelId="sessions-label"
-          counter={sessionCounter}
-          counterId="sessions"
-          counterLabel="Sessions"
-          increaseCounter={increaseSessionCounter}
-          decreaseCounter={decreaseSessionCounter}
-          incrementBtnId="sessions-increment"
-          decrementBtnId="sessions-decrement"
-          timerIsRunning={timerIsRunning}
-        />
 
         <Timer
           sessionTime={sessionLengthCounter}
           breakTime={breakLengthCounter}
-          sessions={sessionCounter}
           passRunning={setTimerIsRunning}
           setSessionLength={setSessionLengthCounter}
           setBreakLength={setBreakLengthCounter}

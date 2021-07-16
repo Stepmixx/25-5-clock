@@ -1,7 +1,7 @@
 #timer-container {
-  width: 97%;
+  width: 96%;
   background: #410083;
-  height: min(300px, 55vw);
+  height: min(250px, 55vw);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -14,7 +14,7 @@ h2 {
 }
 
 #time-left {
-  font-size: min(80px, 20vw);
+  font-size: min(70px, 17vw);
 }
 
 #control-panel {
@@ -28,6 +28,7 @@ h2 {
   border: none;
   color: white;
   font-size: min(40px, 10vw);
+  cursor: pointer;
 }
 
 .is-finishing {

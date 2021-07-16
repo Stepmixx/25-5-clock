@@ -29,6 +29,7 @@
 .counter-container button {
   border: none;
   background: none;
+  cursor: pointer;
 }
 
 .counter-container i {

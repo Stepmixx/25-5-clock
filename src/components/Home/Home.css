@@ -13,7 +13,7 @@
 }
 
 #clock-container {
-  width: min(80%, 600px);
+  width: min(60%, 400px);
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
