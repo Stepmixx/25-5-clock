@@ -29,11 +29,24 @@
 .counter-container button {
   border: none;
   background: none;
+  cursor: pointer;
 }
 
 .counter-container i {
   font-size: min(30px, 10vw);
   color: #410083;
+}
+
+#session-increment i:hover,
+#break-increment i:hover,
+#sessions-increment i:hover {
+  margin-bottom: min(5px, 1vw);
+}
+
+#session-decrement i:hover,
+#break-decrement i:hover,
+#sessions-decrement i:hover {
+  margin-top: min(5px, 1vw);
 }
 
 .counter-container p {

@@ -45,7 +45,7 @@ function Home() {
   };
 
   const decreaseSessionCounter = () => {
-    if (sessionCounter > 0) {
+    if (sessionCounter > 1) {
       setSessionCounter(sessionCounter - 1);
       setTimeout(() => timerRef.current.restartTimer(), 5);
     }

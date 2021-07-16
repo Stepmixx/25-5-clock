@@ -28,6 +28,7 @@ h2 {
   border: none;
   color: white;
   font-size: min(40px, 10vw);
+  cursor: pointer;
 }
 
 .is-finishing {
