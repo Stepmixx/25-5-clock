@@ -37,6 +37,16 @@
   color: #410083;
 }
 
+#session-increment i:hover,
+#break-increment i:hover {
+  margin-bottom: min(5px, 1vw);
+}
+
+#session-decrement i:hover,
+#break-decrement i:hover {
+  margin-top: min(5px, 1vw);
+}
+
 .counter-container p {
   font-size: 24px;
   margin-left: min(15px, 2vw);
